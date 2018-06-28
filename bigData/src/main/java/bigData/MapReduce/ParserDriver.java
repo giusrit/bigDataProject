@@ -10,8 +10,11 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-import bigData.MapReduce.MyMapRed_WordCount.MyMap;
-import bigData.MapReduce.MyMapRed_WordCount.myRed;
+//import bigData.MapReduce.MyMapRed_WordCount.MyMap;
+import bigData.MapReduce2.*;
+import bigData.MapReduce2.MyMapRed.MyMapRed_WordSum;
+//import bigData.MapReduce.MyMapRed_WordCount.myRed;
+import bigData.MapReduce2.MyMapRed.myRed;
  
 public class ParserDriver {
  
@@ -40,20 +43,28 @@ public class ParserDriver {
  
             Job job = Job.getInstance(conf);
             job.setJarByClass(ParserDriver.class);
-            job.setMapperClass(MyMap.class);
+            //job.setMapperClass(MyMap.class);
             job.setReducerClass(myRed.class);
+            
+            job.setMapperClass(MyMapRed_WordSum.class);
  
             job.setNumReduceTasks(1);
  
             job.setInputFormatClass(XMLInputFormat.class);
             job.setOutputValueClass(TextOutputFormat.class);
  
-            job.setMapOutputKeyClass(IntWritable.class);
-            job.setMapOutputValueClass(Text.class);
+            job.setMapOutputKeyClass(Text.class);
+            job.setMapOutputValueClass(IntWritable.class);
+            
+            //job.setMapOutputKeyClass(IntWritable.class);
+            //job.setMapOutputValueClass(Text.class);
  
-            job.setOutputKeyClass(IntWritable.class);
-            job.setOutputValueClass(Text.class);
+            //job.setOutputKeyClass(IntWritable.class);
+            //job.setOutputValueClass(Text.class);
  
+            job.setOutputValueClass(IntWritable.class);
+            job.setOutputKeyClass(Text.class);
+            
             FileInputFormat.addInputPath(job, new Path(args[0]));
             FileOutputFormat.setOutputPath(job, new Path(args[1]));
  

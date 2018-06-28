@@ -187,7 +187,7 @@ public class MyMapRed {
 				// context.write(new Text(word+";"), new
 				// Text(myRedHashSum.get(word)+";"+myRedHashID.get(word)));
 
-				context.write(new Text(word + ";"), new IntWritable(myRedHashSum.get(word)));
+				context.write(new Text(word), new IntWritable(myRedHashSum.get(word)));
 
 			}
 
