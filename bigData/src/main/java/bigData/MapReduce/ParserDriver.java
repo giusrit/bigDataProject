@@ -12,9 +12,9 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 //import bigData.MapReduce.MyMapRed_WordCount.MyMap;
 import bigData.MapReduce2.*;
-import bigData.MapReduce2.MyMapRed.MyMapRed_WordSum;
+import bigData.MapReduce2.SecondMapReduce.SecondMapper;
 //import bigData.MapReduce.MyMapRed_WordCount.myRed;
-import bigData.MapReduce2.MyMapRed.myRed;
+import bigData.MapReduce2.SecondMapReduce.SecondReducer;
  
 public class ParserDriver {
  
@@ -44,9 +44,9 @@ public class ParserDriver {
             Job job = Job.getInstance(conf);
             job.setJarByClass(ParserDriver.class);
             //job.setMapperClass(MyMap.class);
-            job.setReducerClass(myRed.class);
+            job.setReducerClass(SecondReducer.class);
             
-            job.setMapperClass(MyMapRed_WordSum.class);
+            job.setMapperClass(SecondMapper.class);
  
             job.setNumReduceTasks(1);
  

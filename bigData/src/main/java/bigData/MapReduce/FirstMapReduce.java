@@ -19,9 +19,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class MyMapRed_WordCount {
+public class FirstMapReduce {
 
-	public static class MyMap extends Mapper<LongWritable, Text, IntWritable, Text> {
+	public static class FirstMapper extends Mapper<LongWritable, Text, IntWritable, Text> {
 
 		HashMap<Integer, HashMap<String, Integer>> myHash = new HashMap<>();
 		HashMap<Integer, Integer> idToRevID = new HashMap<>();
@@ -60,8 +60,6 @@ public class MyMapRed_WordCount {
 						}else {
 							userName = "nullato";
 						}
-						//String cleanedComment = comment.toLowerCase().replaceAll("[_|$#<>\\^=\\[\\]\\*/\\\\,;,.\\-:()?!]\"", " ");
-
 
 
 						String cleanedComment = comment.toLowerCase();
@@ -82,6 +80,26 @@ public class MyMapRed_WordCount {
 						cleanedComment = cleanedComment.replace("&", " ");
 						cleanedComment = cleanedComment.replace("*", " ");
 						cleanedComment = cleanedComment.replace("+", " ");
+						
+						
+//						cleanedComment = cleanedComment.replace("/*", " ");
+//						cleanedComment = cleanedComment.replace("*/", " ");
+//						cleanedComment = cleanedComment.replace(":", " ");
+//						cleanedComment = cleanedComment.replace(",", " ");
+//						cleanedComment = cleanedComment.replace("[", " ");
+//						cleanedComment = cleanedComment.replace("]", " ");
+//						cleanedComment = cleanedComment.replace("(", " ");
+//						cleanedComment = cleanedComment.replace(")", " ");
+//						cleanedComment = cleanedComment.replace(";", " ");
+//						cleanedComment = cleanedComment.replace("!", " ");
+//						cleanedComment = cleanedComment.replace("?", " ");
+//						cleanedComment = cleanedComment.replace("'", " ");
+//						cleanedComment = cleanedComment.replace("$", " ");
+//						cleanedComment = cleanedComment.replace("&", " ");
+//						cleanedComment = cleanedComment.replace("*", " ");
+//						cleanedComment = cleanedComment.replace("+", " ");
+//						cleanedComment = cleanedComment.replace("#", " ");
+//						cleanedComment = cleanedComment.replace("\"", " ");
 
 						cleanedComment = cleanedComment.trim();
 
@@ -141,7 +159,7 @@ public class MyMapRed_WordCount {
 		}
 	}
 
-	public static class myRed extends Reducer<IntWritable, Text, IntWritable, Text>{
+	public static class FirstReducer extends Reducer<IntWritable, Text, IntWritable, Text>{
 
 		@Override
 		protected void reduce(IntWritable key, Iterable<Text> values,
