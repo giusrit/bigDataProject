@@ -63,7 +63,8 @@ public class FirstMapReduce {
 
 
 						String cleanedComment = comment.toLowerCase();
-
+						
+						
 						cleanedComment = cleanedComment.replace("/*", " ");
 						cleanedComment = cleanedComment.replace("*/", " ");
 						cleanedComment = cleanedComment.replace(":", " ");
@@ -80,26 +81,8 @@ public class FirstMapReduce {
 						cleanedComment = cleanedComment.replace("&", " ");
 						cleanedComment = cleanedComment.replace("*", " ");
 						cleanedComment = cleanedComment.replace("+", " ");
-						
-						
-//						cleanedComment = cleanedComment.replace("/*", " ");
-//						cleanedComment = cleanedComment.replace("*/", " ");
-//						cleanedComment = cleanedComment.replace(":", " ");
-//						cleanedComment = cleanedComment.replace(",", " ");
-//						cleanedComment = cleanedComment.replace("[", " ");
-//						cleanedComment = cleanedComment.replace("]", " ");
-//						cleanedComment = cleanedComment.replace("(", " ");
-//						cleanedComment = cleanedComment.replace(")", " ");
-//						cleanedComment = cleanedComment.replace(";", " ");
-//						cleanedComment = cleanedComment.replace("!", " ");
-//						cleanedComment = cleanedComment.replace("?", " ");
-//						cleanedComment = cleanedComment.replace("'", " ");
-//						cleanedComment = cleanedComment.replace("$", " ");
-//						cleanedComment = cleanedComment.replace("&", " ");
-//						cleanedComment = cleanedComment.replace("*", " ");
-//						cleanedComment = cleanedComment.replace("+", " ");
-//						cleanedComment = cleanedComment.replace("#", " ");
-//						cleanedComment = cleanedComment.replace("\"", " ");
+						cleanedComment = cleanedComment.replace("#", " ");
+						cleanedComment = cleanedComment.replace("\"", " ");
 
 						cleanedComment = cleanedComment.trim();
 
