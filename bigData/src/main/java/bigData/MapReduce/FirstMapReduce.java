@@ -27,8 +27,6 @@ public class FirstMapReduce {
 		HashMap<Integer, Integer> idToRevID = new HashMap<>();
 		HashMap<Integer, String> idToUsername = new HashMap<>();
 
-
-
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
 			try {
@@ -55,16 +53,14 @@ public class FirstMapReduce {
 						Integer idRev = Integer.parseInt(idRevString);
 						String userName = new String();
 						NodeList nl = eElement.getElementsByTagName("username");
-						if(nl.getLength()>0) {
-							userName =nl.item(0).getTextContent();
-						}else {
+						if (nl.getLength() > 0) {
+							userName = nl.item(0).getTextContent();
+						} else {
 							userName = "nullato";
 						}
 
-
 						String cleanedComment = comment.toLowerCase();
-						
-						
+
 						cleanedComment = cleanedComment.replace("/*", " ");
 						cleanedComment = cleanedComment.replace("*/", " ");
 						cleanedComment = cleanedComment.replace(":", " ");
@@ -92,30 +88,20 @@ public class FirstMapReduce {
 
 						idToRevID.put(myID, idRev);
 
-
-
 						idToUsername.put(myID, userName);
 
-
-						while(str.hasMoreTokens())
-						{
+						while (str.hasMoreTokens()) {
 
 							String word = str.nextToken();
 
-							if(!myHash.containsKey(myID))
-							{
-								HashMap<String,Integer> h = new HashMap<>();
+							if (!myHash.containsKey(myID)) {
+								HashMap<String, Integer> h = new HashMap<>();
 								h.put(word, 1);
 								myHash.put(myID, h);
-							}
-							else
-							{
-								if(!myHash.get(myID).keySet().contains(word))
-								{
+							} else {
+								if (!myHash.get(myID).keySet().contains(word)) {
 									myHash.get(myID).put(word, 1);
-								}
-								else
-								{
+								} else {
 									int sum = myHash.get(myID).get(word) + 1;
 									myHash.get(myID).put(word, sum);
 								}
@@ -123,8 +109,8 @@ public class FirstMapReduce {
 						}
 					}
 				}
+			} catch (Exception e) {
 			}
-			catch(Exception e) {}
 
 		}
 
@@ -132,42 +118,40 @@ public class FirstMapReduce {
 		protected void cleanup(Mapper<LongWritable, Text, IntWritable, Text>.Context context)
 				throws IOException, InterruptedException {
 
-			for(Integer id : myHash.keySet())
-			{
-				for(String word : myHash.get(id).keySet())
-				{
-					context.write(new IntWritable(id), new Text(word + ";"+ myHash.get(id).get(word)+";"+idToRevID.get(id)+";"+idToUsername.get(id)));
+			for (Integer id : myHash.keySet()) {
+				for (String word : myHash.get(id).keySet()) {
+					context.write(new IntWritable(id), new Text(word + ";" + myHash.get(id).get(word) + ";"
+							+ idToRevID.get(id) + ";" + idToUsername.get(id)));
 				}
 			}
 		}
 	}
 
-	public static class FirstReducer extends Reducer<IntWritable, Text, IntWritable, Text>{
+	public static class FirstReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
 
 		@Override
 		protected void reduce(IntWritable key, Iterable<Text> values,
-				Reducer<IntWritable, Text, IntWritable, Text>.Context context) throws IOException, InterruptedException {
+				Reducer<IntWritable, Text, IntWritable, Text>.Context context)
+				throws IOException, InterruptedException {
 
 			String str = "";
 
 			int tot = 0;
-			int idRev=0;
+			int idRev = 0;
 			String username = new String();
 
-			for(Text tx : values)
-			{
+			for (Text tx : values) {
 				username = tx.toString().split(";")[3];
-				idRev=Integer.parseInt(tx.toString().split(";")[2]);
-				tot+=Integer.parseInt(tx.toString().split(";")[1]);
-				String parola=tx.toString().split(";")[0];
+				idRev = Integer.parseInt(tx.toString().split(";")[2]);
+				tot += Integer.parseInt(tx.toString().split(";")[1]);
+				String parola = tx.toString().split(";")[0];
 				int countP = Integer.parseInt(tx.toString().split(";")[1]);
-				str+=parola+" "+countP+" ";
+				str += parola + " " + countP + " ";
 			}
 
-			context.write(key, new Text(str+";"+tot+";"+idRev+";"+username));
+			context.write(key, new Text(str + ";" + tot + ";" + idRev + ";" + username));
 		}
 
 	}
 
 }
-

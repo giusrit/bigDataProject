@@ -1,10 +1,9 @@
-package bigData.MapReduce2;
+package bigData.MapReduce;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -21,14 +20,13 @@ public class SecondMapReduce {
 
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-			
 			StringTokenizer str = new StringTokenizer(value.toString().split(";")[1]);
-			
+
 			while (str.hasMoreTokens()) {
 
 				String word = str.nextToken();
 				String occurences = str.nextToken();
-				
+
 				if (!myHash.containsKey(word)) {
 					myHash.put(word, Integer.parseInt(occurences));
 
@@ -58,7 +56,7 @@ public class SecondMapReduce {
 		@Override
 		protected void reduce(Text key, Iterable<IntWritable> values,
 				Reducer<Text, IntWritable, Text, IntWritable>.Context context)
-						throws IOException, InterruptedException {
+				throws IOException, InterruptedException {
 
 			int sum = 0;
 			for (IntWritable val : values) {
@@ -70,7 +68,6 @@ public class SecondMapReduce {
 		@Override
 		protected void cleanup(Reducer<Text, IntWritable, Text, IntWritable>.Context context)
 				throws IOException, InterruptedException {
-
 
 			for (String word : myRedHashSum.keySet()) {
 				context.write(new Text(word), new IntWritable(myRedHashSum.get(word)));

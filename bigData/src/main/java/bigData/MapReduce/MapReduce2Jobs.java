@@ -1,4 +1,4 @@
-package justAnotherMapReduce;
+package bigData.MapReduce;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -16,36 +16,31 @@ import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import bigData.MapReduce.FirstMapReduce.FirstMapper;
 import bigData.MapReduce.FirstMapReduce.FirstReducer;
 import bigData.MapReduce.XMLInputFormat;
-import bigData.MapReduce2.SecondMapReduce;
-import bigData.MapReduce2.SecondMapReduce.SecondMapper;
-import bigData.MapReduce2.SecondMapReduce.SecondReducer;
+import bigData.MapReduce.SecondMapReduce;
+import bigData.MapReduce.SecondMapReduce.SecondMapper;
+import bigData.MapReduce.SecondMapReduce.SecondReducer;
 
 public class MapReduce2Jobs implements Tool {
 
+	public static void main(String[] args) throws Exception {
+		int exitCode = ToolRunner.run(new MapReduce2Jobs(), args);
+		System.exit(exitCode);
+	}
 
-	
-	public static void main(String[] args) throws Exception { 
-		  int exitCode = ToolRunner.run(new MapReduce2Jobs(), args);  
-		  System.exit(exitCode);
-		  }
-	
-	
-	
-	
 	@Override
 	public Configuration getConf() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	public void setConf(Configuration arg0) {
 		// TODO Auto-generated method stub
-		
 	}
+
 	@Override
 	public int run(String[] args) throws Exception {
 		JobControl jobControl = new JobControl("jobChain");
-
 
 		Configuration conf1 = new Configuration();
 		conf1.set("START_TAG_KEY", "<page>");
@@ -69,17 +64,13 @@ public class MapReduce2Jobs implements Tool {
 		job1.setOutputKeyClass(Text.class);
 
 		FileInputFormat.addInputPath(job1, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job1, new Path(args[1]+"/primoJob"));
+		FileOutputFormat.setOutputPath(job1, new Path(args[1] + "/primoJob"));
 
 		ControlledJob controlledJob1 = new ControlledJob(conf1);
 		controlledJob1.setJob(job1);
 
 		jobControl.addJob(controlledJob1);
 
-		
-		
-		
-		
 		Configuration conf2 = new Configuration();
 		conf2.set(TextOutputFormat.SEPERATOR, ";");
 
@@ -94,23 +85,22 @@ public class MapReduce2Jobs implements Tool {
 
 		job2.setOutputKeyClass(IntWritable.class);
 		job2.setOutputValueClass(Text.class);
-		
+
 		job2.setMapOutputKeyClass(Text.class);
 		job2.setMapOutputValueClass(IntWritable.class);
 
 		ControlledJob controlledJob2 = new ControlledJob(conf2);
 		controlledJob2.setJob(job2);
 
-
 		// make job2 dependent on job1
-		controlledJob2.addDependingJob(controlledJob1); 
+		controlledJob2.addDependingJob(controlledJob1);
 		// add the job to the job control
 		jobControl.addJob(controlledJob2);
 		Thread jobControlThread = new Thread(jobControl);
 		jobControlThread.start();
 
 		while (!jobControl.allFinished()) {
-			System.out.println("Jobs in waiting state: " + jobControl.getWaitingJobList().size());  
+			System.out.println("Jobs in waiting state: " + jobControl.getWaitingJobList().size());
 			System.out.println("Jobs in ready state: " + jobControl.getReadyJobsList().size());
 			System.out.println("Jobs in running state: " + jobControl.getRunningJobList().size());
 			System.out.println("Jobs in success state: " + jobControl.getSuccessfulJobList().size());
@@ -121,8 +111,8 @@ public class MapReduce2Jobs implements Tool {
 
 			}
 
-		} 
-		System.exit(0);  
-		return (job1.waitForCompletion(true) ? 0 : 1); 
+		}
+		System.exit(0);
+		return (job1.waitForCompletion(true) ? 0 : 1);
 	}
 }
