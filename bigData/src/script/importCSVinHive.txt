@@ -17,7 +17,7 @@ load data local inpath '/home/giuseppe/word_count.csv' into table word_count;
 
 cd /usr/hdp/current/spark2-client
 
-./bin/spark-submit --class bigData.bigData.App --master yarn-client --num-executors 3 --driver-memory 512m --executor-memory 512m --executor-cores 1 /home/giuseppe/sparkC.jar 10
+./bin/spark-submit --class bigData.bigData.App /home/giuseppe/sparkAVG.jar
 
 ----------------- Query HIVE --------------------------
 (1)
