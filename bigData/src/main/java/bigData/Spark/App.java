@@ -4,14 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
-import org.apache.spark.sql.expressions.Window;
-import org.apache.spark.sql.expressions.WindowSpec;
 
 import scala.Tuple2;
 
@@ -21,9 +23,15 @@ public class App {
 
 		File outQuery1 = new File("/home/giuseppe/resultQuery1Spark.csv");
 		File outQuery2 = new File("/home/giuseppe/resultQuery2Spark.csv");
+		File output = new File("/home/giuseppe/result.csv");
+
 
 		SparkSession spark = SparkSession.builder().appName("Java Spark project").enableHiveSupport().getOrCreate();
 
+		
+		JavaSparkContext context = new JavaSparkContext(spark.sparkContext());
+		
+		
 		Dataset<Row> ct_table = spark.table("itwiki.change_tag");
 
 		Dataset<Row> page2revisionCommentWords_table = spark.table("itwiki.page2revisionCommentWords");
@@ -46,10 +54,36 @@ public class App {
 		 * QUERY 2 SPARK Find for each author most used change tag
 		 */
 		writeOnFile("author" + "\t" + "max(count)", outQuery2);
-		Dataset<Row> counted = joined.groupBy("author", "ct_tag").count();
-		WindowSpec w = Window.partitionBy("author","ct_tag");
-		Dataset<Row> nuovo = counted.withColumn("max_count", functions.max("count").over(w));
-
+		Dataset<Row> counted = joined.groupBy("author", "ct_tag").count().alias("count");
+		
+		JavaPairRDD<String, String> jprdd = counted.toJavaRDD()
+				.mapToPair(row -> new Tuple2<String, String>(row.get(0).toString(), 
+						new String(row.get(1).toString() +";"+ row.get(2).toString())));
+		
+		
+		
+		for (Tuple2<String, Iterable<String>> author : jprdd.groupByKey().collect()) {
+			List<Tuple2<String, Integer>> ct_max = new ArrayList<Tuple2<String, Integer>>();
+			String my_ct = "";
+			int my_count=0 ;
+			
+			for (String ct_tag : author._2) {
+				
+					my_ct = ct_tag.toString().split(";")[0];
+					my_count = Integer.parseInt(ct_tag.toString().split(";")[1]);
+					ct_max.add(new Tuple2(my_ct,my_count));
+				}
+			
+				
+			context.parallelizePairs(context.parallelizePairs(ct_max)
+					.mapToPair(item -> item.swap()).sortByKey(false).take(1))
+			.foreach(line -> writeOnFile(author._1 + " \t" + line._1 + "\t" + line._2, outQuery2));
+			}
+			
+			
+//		counted.groupByKey(x -> x., x._2);
+		
+		
 		// <author, tag count>
 //		JavaPairRDD<String, String> jp = spark.sql(
 //				"select author, ct_tag, count(ct_tag) from itwiki.page2revisioncommentwords, itwiki.change_tag "
@@ -63,8 +97,8 @@ public class App {
 
 		// end.show(5000);
 
-		nuovo.foreach(line -> writeOnFile(line.get(0).toString() + " \t" + line.get(1).toString()+ " \t" + line.get(2).toString() + " \t" + line.get(3).toString(), outQuery2));
-		nuovo.show(100);
+//		counted.foreach(line -> writeOnFile(line.get(0).toString() + " \t" + line.get(1).toString(), outQuery2));
+//		 counted.show(100);
 
 		spark.stop();
 	}
