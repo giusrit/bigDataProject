@@ -10,6 +10,8 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
+import org.apache.spark.sql.expressions.Window;
+import org.apache.spark.sql.expressions.WindowSpec;
 
 import scala.Tuple2;
 
@@ -45,6 +47,9 @@ public class App {
 		 */
 		writeOnFile("author" + "\t" + "max(count)", outQuery2);
 		Dataset<Row> counted = joined.groupBy("author", "ct_tag").count();
+		WindowSpec w = Window.partitionBy("author","ct_tag");
+		Dataset<Row> nuovo = counted.withColumn("max_count", functions.max("count").over(w));
+
 		// <author, tag count>
 //		JavaPairRDD<String, String> jp = spark.sql(
 //				"select author, ct_tag, count(ct_tag) from itwiki.page2revisioncommentwords, itwiki.change_tag "
@@ -58,8 +63,8 @@ public class App {
 
 		// end.show(5000);
 
-		counted.foreach(line -> writeOnFile(line.get(0).toString() + " \t" + line.get(1).toString(), outQuery2));
-		 counted.show(100);
+		nuovo.foreach(line -> writeOnFile(line.get(0).toString() + " \t" + line.get(1).toString()+ " \t" + line.get(2).toString() + " \t" + line.get(3).toString(), outQuery2));
+		nuovo.show(100);
 
 		spark.stop();
 	}
