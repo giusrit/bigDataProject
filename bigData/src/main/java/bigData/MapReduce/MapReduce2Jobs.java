@@ -60,8 +60,9 @@ public class MapReduce2Jobs implements Tool {
 		job1.setMapOutputKeyClass(IntWritable.class);
 		job1.setMapOutputValueClass(Text.class);
 
-		job1.setOutputValueClass(IntWritable.class);
-		job1.setOutputKeyClass(Text.class);
+		
+		job1.setOutputKeyClass(IntWritable.class);
+		job1.setOutputValueClass(Text.class);
 
 		FileInputFormat.addInputPath(job1, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job1, new Path(args[1] + "/primoJob"));
@@ -83,8 +84,8 @@ public class MapReduce2Jobs implements Tool {
 		job2.setMapperClass(SecondMapper.class);
 		job2.setReducerClass(SecondReducer.class);
 
-		job2.setOutputKeyClass(IntWritable.class);
-		job2.setOutputValueClass(Text.class);
+		job2.setOutputKeyClass(Text.class);
+		job2.setOutputValueClass(IntWritable.class);
 
 		job2.setMapOutputKeyClass(Text.class);
 		job2.setMapOutputValueClass(IntWritable.class);
