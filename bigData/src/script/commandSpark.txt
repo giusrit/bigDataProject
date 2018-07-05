@@ -1,6 +1,9 @@
 ------------------su spark per eseguire lo jar---------------------------------------------
 cd /usr/hdp/current/spark2-client
 
-./bin/spark-submit --class bigData.bigData.App /home/giuseppe/sparkAVG.jar
+./bin/spark-submit --class bigData.bigData.App /home/giuseppe/spark.jar
+
+------------------oppure---------------------
+spark-submit --class bigData.Spark.App  /home/giuseppe/spark.jar
 
 

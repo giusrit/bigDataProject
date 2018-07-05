@@ -2,7 +2,7 @@ da hive:
 ------------------tabella page2revisionCommentWords----------------------------------------
 use itwiki;
 
-create table if not exists page2revisionCommentWords(page_id BIGINT,word_sum STRING,tot INT,rev_id BIGINT,author STRING) row format delimited fields terminated by '\;' stored as textfile location '/home/giuseppe/page2revisionCommentWords.csv';
+create table if not exists page2revisioncommentwords(page_id BIGINT,word_sum STRING,tot INT,rev_id BIGINT,author STRING) row format delimited fields terminated by '\;' stored as textfile location '/home/giuseppe/page2revisionCommentWords.csv';
 
 load data local inpath '/home/giuseppe/page2revisionCommentWords.csv' into table page2revisionCommentWords;
 

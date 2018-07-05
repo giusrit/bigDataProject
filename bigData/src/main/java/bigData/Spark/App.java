@@ -47,7 +47,7 @@ public class App {
 		/**
 		 * QUERY 2 SPARK Find for each author most used change tag
 		 */
-		writeOnFile("author" + "\t" + "max(count)", outQuery2);
+		writeOnFile("author" + "\t" + "max(count)" + "\t" + "tag", outQuery2);
 		Dataset<Row> counted = joined.groupBy("author", "ct_tag").count().alias("count");
 
 		JavaPairRDD<String, String> jprdd = counted.toJavaRDD()
