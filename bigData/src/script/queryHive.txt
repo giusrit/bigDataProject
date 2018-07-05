@@ -1,0 +1,7 @@
+----------------- Query HIVE --------------------------------------------------------------
+(1)
+SELECT * FROM word_count ORDER BY word_sum DESC LIMIT 10;
+
+(2)
+select ct_tag, count(*) as c from page2revisioncommentwords, change_tag where rev_id=ct_rev_id
+group by ct_tag order by c desc  limit 10;

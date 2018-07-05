@@ -1,5 +1,4 @@
 da hive:
-
 ------------------tabella page2revisionCommentWords----------------------------------------
 use itwiki;
 
@@ -7,22 +6,10 @@ create table if not exists page2revisionCommentWords(page_id BIGINT,word_sum STR
 
 load data local inpath '/home/giuseppe/page2revisionCommentWords.csv' into table page2revisionCommentWords;
 
-------------------tabella word_count----------------------------------------
+------------------tabella word_count-------------------------------------------------------
 create table if not exists word_count(word STRING,word_sum INT) row format delimited fields terminated by '\;' stored as textfile location '/home/giuseppe/word_count.csv';
 
 load data local inpath '/home/giuseppe/word_count.csv' into table word_count;
 
-------------------su spark per eseguire lo jar----------------------------
-......
 
-cd /usr/hdp/current/spark2-client
 
-./bin/spark-submit --class bigData.bigData.App /home/giuseppe/sparkAVG.jar
-
------------------ Query HIVE --------------------------
-(1)
-SELECT * FROM word_count ORDER BY word_sum DESC LIMIT 10;
-
-(2)
-select ct_tag, count(*) as c from page2revisioncommentwords, change_tag where rev_id=ct_rev_id
-group by ct_tag order by c desc  limit 10;

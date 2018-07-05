@@ -12,7 +12,6 @@ sqoop import --connect jdbc:mysql://localhost/itwiki --username root --password 
 echo "PAGES IMPORTED"
 
 # Import and convert of change_tag
-# Get only change_tag ?????????????????????
 sqoop import --connect jdbc:mysql://localhost/itwiki --username root --password hadoop --query "select ct_id, ct_rc_id, ct_log_id, ct_rev_id, convert(ct_tag using utf8) as ct_tag,convert(ct_params using utf8) as ct_params from change_tag where \$CONDITIONS" --split-by ct_id --target-dir /home/hdfs/itwiki/change_tag --driver com.mysql.jdbc.Driver --hive-import --hive-overwrite --hive-table itwiki.change_tag --create-hive-table -m 512
 
 echo "CHANGE_TAG IMPORTED"
